@@ -5,6 +5,10 @@ block content
   
   if user
     button.create(type='button') New Message
+  else
+    p(style='text-align: center;')
+      a(href='register') Sign up
+      | &nbsp;to write your own message!
   
   .messages
     for msg in messages

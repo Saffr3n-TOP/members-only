@@ -85,6 +85,10 @@ button:active {
   background-color: blue;
 }
 
+p {
+  margin: 0.5rem 0;
+}
+
 .logo {
   color: black;
   font-family: var(--serif);
