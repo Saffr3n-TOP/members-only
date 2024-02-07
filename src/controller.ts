@@ -43,3 +43,19 @@ export function registerPost(req: Request, res: Response, next: NextFunction) {
 export function logout(req: Request, res: Response, next: NextFunction) {
   res.send('NOT IMPLEMENTED: Logout route');
 }
+
+export function createGet(req: Request, res: Response, next: NextFunction) {
+  res.send('NOT IMPLEMENTED: Message create GET route');
+}
+
+export function createPost(req: Request, res: Response, next: NextFunction) {
+  res.send('NOT IMPLEMENTED: Message create POST route');
+}
+
+export function deleteGet(req: Request, res: Response, next: NextFunction) {
+  res.send('NOT IMPLEMENTED: Message delete GET route');
+}
+
+export function deletePost(req: Request, res: Response, next: NextFunction) {
+  res.send('NOT IMPLEMENTED: Message delete POST route');
+}
