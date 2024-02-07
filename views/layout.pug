@@ -6,4 +6,20 @@ html(lang='en')
     link(rel='stylesheet' type='text/css' href='stylesheets/style.css')
     title= error ? error.message : title
   body
-    block content
+    header
+      a.logo(href='/') Members Only
+      nav
+        ul
+          li
+            a(href='/') Message Board
+          if user
+            li
+              a(href='logout') Log Out
+          else
+            li
+              a(href='register') Sign Up
+            li
+              a(href='login') Log In
+
+    main
+      block content
