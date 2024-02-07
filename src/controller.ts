@@ -1,7 +1,27 @@
-import { Request, Response, NextFunction } from 'express';
+import { Request as Req, Response, NextFunction } from 'express';
+import createError from 'http-errors';
+import Message from './models/message';
+import User from './models/user';
 
-export function index(req: Request, res: Response, next: NextFunction) {
-  res.send('NOT IMPLEMENTED: Index route');
+type Request = Req & { user?: User };
+
+export async function index(req: Request, res: Response, next: NextFunction) {
+  const messages = await Message.find()
+    .sort({ date: 1 })
+    .populate('author', {}, User)
+    .exec()
+    .catch(() => {});
+
+  if (!messages) {
+    const err = createError(500, 'No Database Response');
+    return next(err);
+  }
+
+  res.status(200).render('index', {
+    title: 'Message Board',
+    user: req.user,
+    messages
+  });
 }
 
 export function loginGet(req: Request, res: Response, next: NextFunction) {
