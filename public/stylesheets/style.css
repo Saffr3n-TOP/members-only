@@ -89,6 +89,23 @@ p {
   margin: 0.5rem 0;
 }
 
+form {
+  display: grid;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+label {
+  display: grid;
+}
+
+input {
+  padding: 0 0.25rem;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+}
+
 .logo {
   color: black;
   font-family: var(--serif);

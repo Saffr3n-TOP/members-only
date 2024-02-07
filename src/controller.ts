@@ -33,7 +33,8 @@ export function loginPost(req: Request, res: Response, next: NextFunction) {
 }
 
 export function registerGet(req: Request, res: Response, next: NextFunction) {
-  res.send('NOT IMPLEMENTED: Register GET route');
+  if (req.user) res.redirect('/');
+  res.status(200).render('register', { title: 'Sign Up' });
 }
 
 export function registerPost(req: Request, res: Response, next: NextFunction) {
