@@ -2,4 +2,19 @@ extends layout
 
 block content
   h1= title
-  p Welcome to #{title}
+  
+  if user
+    button.create(type='button') New Message
+  
+  .messages
+    for msg in messages
+      .message
+        h2= msg.title
+        p= msg.text
+        small
+          span Author: #{(user && user.role !== 'User') ? msg.author.name : 'hidden'}
+          span Posted: #{(user && user.role !== 'User') ? msg.dateFormatted : 'hidden'}
+        if user && user.role === 'Admin'
+          button.delete(type='button' id=msg.id) x
+
+  script(type='text/javascript' src='javascripts/index.js')
