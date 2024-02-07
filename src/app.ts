@@ -4,6 +4,7 @@ import path from 'path';
 import logger from 'morgan';
 import cookieParser from 'cookie-parser';
 import createError, { HttpError } from 'http-errors';
+import router from './router';
 
 const app = express();
 
@@ -21,9 +22,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, '..', 'public')));
 
-app.get('/', (req: Request, res: Response) => {
-  res.render('index', { title: 'Members Only' });
-});
+app.use('/', router);
 
 app.use(function (req, res, next) {
   next(createError(404, 'Page Not Found'));
