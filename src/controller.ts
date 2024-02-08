@@ -25,7 +25,8 @@ export async function index(req: Request, res: Response, next: NextFunction) {
 }
 
 export function loginGet(req: Request, res: Response, next: NextFunction) {
-  res.send('NOT IMPLEMENTED: Login GET route');
+  if (req.user) res.redirect('/');
+  res.status(200).render('login', { title: 'Log In' });
 }
 
 export function loginPost(req: Request, res: Response, next: NextFunction) {
