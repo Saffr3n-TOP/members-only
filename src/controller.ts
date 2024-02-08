@@ -38,9 +38,7 @@ export async function loginPost(
   passport.authenticate(
     'local',
     function (err: HttpError, user: Express.User, info: { message: string }) {
-      if (err) {
-        return next(err);
-      }
+      if (err) return next(err);
 
       if (!user) {
         return res.status(400).render('login', {
@@ -51,10 +49,7 @@ export async function loginPost(
       }
 
       req.login(user, function (err) {
-        if (err) {
-          return next(err);
-        }
-
+        if (err) return next(err);
         res.redirect('/');
       });
     }
@@ -109,17 +104,19 @@ export const registerPost = [
     }
 
     req.login(user, function (err) {
-      if (err) {
-        return next(err);
-      }
-
+      if (err) return next(err);
       res.redirect('/');
     });
   }
 ];
 
 export function logout(req: Request, res: Response, next: NextFunction) {
-  res.send('NOT IMPLEMENTED: Logout route');
+  if (!req.user) res.redirect('/');
+
+  req.logout(function (err) {
+    if (err) return next(err);
+    res.redirect('/');
+  });
 }
 
 export function createGet(req: Request, res: Response, next: NextFunction) {
