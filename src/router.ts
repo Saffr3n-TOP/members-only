@@ -9,6 +9,8 @@ router.post('/login', controller.loginPost);
 router.get('/register', controller.registerGet);
 router.post('/register', controller.registerPost);
 router.get('/logout', controller.logout);
+router.get('/upgrade', controller.upgradeGet);
+router.post('/upgrade', controller.upgradePost);
 router.get('/message/create', controller.createGet);
 router.post('/message/create', controller.createPost);
 router.get('/message/:id/delete', controller.deleteGet);

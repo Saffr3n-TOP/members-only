@@ -1,0 +1,17 @@
+extends layout
+
+block content
+  h1= title
+
+  if user && user.role !== 'User'
+    p(style='text-align: center;') You are already in the club!
+  else
+    if error
+      p#alert(role='alert')= error.msg
+
+    form(method='POST')
+      label(for='passcode') Passcode
+        input#passcode(type='text' name='passcode' required)
+      button(type="submit") Upgrade
+  
+  script(type='text/javascript' src='/javascripts/form.js')

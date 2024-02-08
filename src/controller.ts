@@ -26,7 +26,7 @@ export async function index(req: Request, res: Response, next: NextFunction) {
 }
 
 export function loginGet(req: Request, res: Response, next: NextFunction) {
-  if (req.user) res.redirect('/');
+  if (req.user) return res.redirect('/');
   res.status(200).render('login', { title: 'Log In' });
 }
 
@@ -57,7 +57,7 @@ export async function loginPost(
 }
 
 export function registerGet(req: Request, res: Response, next: NextFunction) {
-  if (req.user) res.redirect('/');
+  if (req.user) return res.redirect('/');
   res.status(200).render('register', { title: 'Sign Up' });
 }
 
@@ -111,7 +111,7 @@ export const registerPost = [
 ];
 
 export function logout(req: Request, res: Response, next: NextFunction) {
-  if (!req.user) res.redirect('/');
+  if (!req.user) return res.redirect('/');
 
   req.logout(function (err) {
     if (err) return next(err);
@@ -119,8 +119,57 @@ export function logout(req: Request, res: Response, next: NextFunction) {
   });
 }
 
+export function upgradeGet(req: Request, res: Response, next: NextFunction) {
+  if (!req.user) return res.redirect('/login');
+
+  res.status(200).render('upgrade', {
+    title: 'Upgrade Membership',
+    user: req.user
+  });
+}
+
+export async function upgradePost(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  if (!req.user) {
+    const err = createError(401, 'Unauthorized');
+    return next(err);
+  }
+
+  if (req.body.passcode !== process.env.PASSCODE) {
+    return res.status(400).render('upgrade', {
+      title: 'Upgrade Membership',
+      user: req.user,
+      error: { msg: 'Incorrect passcode' }
+    });
+  }
+
+  if (req.user.role !== 'User') return res.redirect('/');
+
+  const user = await User.findOneAndUpdate(
+    { _id: req.user.id },
+    { role: 'Member' }
+  )
+    .exec()
+    .catch(() => {});
+
+  if (user === undefined) {
+    const err = createError(500, 'No Database Response');
+    return next(err);
+  }
+
+  if (user === null) {
+    const err = createError(404, 'User Not Found');
+    return next(err);
+  }
+
+  res.redirect('/');
+}
+
 export function createGet(req: Request, res: Response, next: NextFunction) {
-  if (!req.user) res.redirect('/login');
+  if (!req.user) return res.redirect('/login');
   res.status(200).render('create', { title: 'New Message', user: req.user });
 }
 

@@ -5,6 +5,10 @@ block content
   
   if user
     button.create(type='button') New Message
+    if user.role === 'User'
+      p(style='text-align: center;')
+        a(href='/upgrade') Join our club
+        | &nbsp;to see messages' author names and publication dates!
   else
     p(style='text-align: center;')
       a(href='/register') Sign up
