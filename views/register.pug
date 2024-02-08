@@ -5,16 +5,26 @@ block content
 
   form(method='POST')
     label(for='email') Email
-      input#email(type='email' name='email' required)
+      input#email(type='email' name='email' required aria-describedby='hint' value=(formData ? formData.email : ''))
+      if error && error.path === 'email'
+        small#hint= error.msg
     label(for='password') Password
-      input#password(type='password' name='password' required)
+      input#password(type='password' name='password' required aria-describedby='hint')
+      if error && (error.path === 'password' || error.path === 'confirm')
+        small#hint= error.msg
     label(for='confirm') Confirm Password
-      input#confirm(type='password' name='confirm' required)
+      input#confirm(type='password' name='confirm' required aria-describedby='hint')
     label(for='firstName') First Name
-      input#firstName(type='text' name='firstName' required)
+      input#firstName(type='text' name='firstName' required aria-describedby='hint' value=(formData ? formData.firstName : ''))
+      if error && error.path === 'firstName'
+        small#hint= error.msg
     label(for='lastName') Last Name
-      input#lastName(type='text' name='lastName' required)
+      input#lastName(type='text' name='lastName' required aria-describedby='hint' value=(formData ? formData.lastName : ''))
+      if error && error.path === 'lastName'
+        small#hint= error.msg
     button(type='submit') Sign Up
 
   p(style='text-align: center;') Already have an account?&nbsp;
-    a(href='login') Login!
+    a(href='login') Log in!
+
+  script(type='text/javascript' src='javascripts/form.js')
