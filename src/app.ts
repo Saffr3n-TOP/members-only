@@ -10,6 +10,10 @@ import createError, { HttpError } from 'http-errors';
 import router from './router';
 import './passport-config';
 
+import compression from 'compression';
+import helmet from 'helmet';
+import rateLimit from 'express-rate-limit';
+
 const app = express();
 
 mongoose.set('strictQuery', false);
@@ -20,10 +24,25 @@ mongoose
 app.set('views', path.join(__dirname, '..', 'views'));
 app.set('view engine', 'pug');
 
+app.use(
+  rateLimit({
+    windowMs: 1 * 60 * 1000,
+    limit: 30
+  })
+);
+app.use(
+  helmet.contentSecurityPolicy({
+    directives: {
+      'script-src': ["'self'", 'code.jquery.com', 'cdn.jsdelivr.net']
+    }
+  })
+);
+
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+app.use(compression());
 app.use(express.static(path.join(__dirname, '..', 'public')));
 app.use(
   session({
@@ -52,11 +71,18 @@ app.use(function (
   res: Response,
   next: NextFunction
 ) {
+  const isDevEnv = req.app.get('env') === 'development';
+
   res.status(err.status || 500).render('error', {
     error: {
-      message: err.message,
+      message:
+        res.statusCode >= 500
+          ? isDevEnv
+            ? err.message
+            : 'Server Error'
+          : err.message,
       status: res.statusCode,
-      stack: req.app.get('env') === 'development' ? err.stack : null
+      stack: isDevEnv ? err.stack : null
     }
   });
 });
