@@ -9,9 +9,9 @@ router.post('/login', controller.loginPost);
 router.get('/register', controller.registerGet);
 router.post('/register', controller.registerPost);
 router.get('/logout', controller.logout);
-router.get('message/create', controller.createGet);
-router.post('message/create', controller.createPost);
-router.get('message/:id/delete', controller.deleteGet);
-router.post('message/:id/delete', controller.deletePost);
+router.get('/message/create', controller.createGet);
+router.post('/message/create', controller.createPost);
+router.get('/message/:id/delete', controller.deleteGet);
+router.post('/message/:id/delete', controller.deletePost);
 
 export default router;

@@ -3,7 +3,7 @@ html(lang='en')
   head
     meta(charset='utf-8')
     meta(name='viewport' content='width=device-width, initial-scale=1.0')
-    link(rel='stylesheet' type='text/css' href='stylesheets/style.css')
+    link(rel='stylesheet' type='text/css' href='/stylesheets/style.css')
     title= error ? error.message : title
   body
     header
@@ -14,12 +14,12 @@ html(lang='en')
             a(href='/') Message Board
           if user
             li
-              a(href='logout') Log Out
+              a(href='/logout') Log Out
           else
             li
-              a(href='register') Sign Up
+              a(href='/register') Sign Up
             li
-              a(href='login') Log In
+              a(href='/login') Log In
 
     main
       block content
