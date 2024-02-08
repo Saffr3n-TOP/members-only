@@ -121,7 +121,7 @@ export function logout(req: Request, res: Response, next: NextFunction) {
 
 export function createGet(req: Request, res: Response, next: NextFunction) {
   if (!req.user) res.redirect('/login');
-  res.status(200).render('create', { title: 'New Message' });
+  res.status(200).render('create', { title: 'New Message', user: req.user });
 }
 
 export const createPost = [
@@ -139,6 +139,7 @@ export const createPost = [
     if (!errors.isEmpty()) {
       return res.status(400).render('create', {
         title: 'New Message',
+        user: req.user,
         formData: req.body,
         error: errors.array()[0]
       });
@@ -162,9 +163,37 @@ export const createPost = [
 ];
 
 export function deleteGet(req: Request, res: Response, next: NextFunction) {
-  res.send('NOT IMPLEMENTED: Message delete GET route');
+  if (!req.user || req.user.role !== 'Admin') {
+    const err = createError(401, 'Unauthorized');
+    return next(err);
+  }
+
+  res.status(200).render('delete', { title: 'Delete Message', user: req.user });
 }
 
-export function deletePost(req: Request, res: Response, next: NextFunction) {
-  res.send('NOT IMPLEMENTED: Message delete POST route');
+export async function deletePost(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  if (!req.user || req.user.role !== 'Admin') {
+    const err = createError(401, 'Unauthorized');
+    return next(err);
+  }
+
+  const message = await Message.findByIdAndDelete(req.params.id)
+    .exec()
+    .catch(() => {});
+
+  if (message === undefined) {
+    const err = createError(500, 'No Database Response');
+    return next(err);
+  }
+
+  if (message === null) {
+    const err = createError(404, 'Message Not Found');
+    return next(err);
+  }
+
+  res.redirect('/');
 }
