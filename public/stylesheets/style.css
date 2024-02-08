@@ -24,6 +24,7 @@ h1 {
 }
 
 h2 {
+  margin: 0.5rem 0;
   padding-right: 1.5rem;
   font-size: 1.2rem;
 }
@@ -104,6 +105,10 @@ input {
   font-family: inherit;
   font-size: inherit;
   line-height: inherit;
+}
+
+pre {
+  font-size: 0.8rem;
 }
 
 .logo {
