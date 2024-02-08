@@ -1,10 +1,14 @@
 import express, { Request, Response, NextFunction } from 'express';
 import mongoose from 'mongoose';
+import MongoStore from 'connect-mongo';
+import session from 'express-session';
+import passport from 'passport';
 import path from 'path';
 import logger from 'morgan';
 import cookieParser from 'cookie-parser';
 import createError, { HttpError } from 'http-errors';
 import router from './router';
+import './passport-config';
 
 const app = express();
 
@@ -21,6 +25,20 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, '..', 'public')));
+app.use(
+  session({
+    secret: process.env.SECRET!,
+    resave: false,
+    saveUninitialized: false,
+    cookie: { maxAge: 1000 * 60 * 60 * 24 },
+    store: MongoStore.create({
+      client: mongoose.connection.getClient(),
+      dbName: 'members-only'
+    })
+  })
+);
+app.use(passport.initialize());
+app.use(passport.session());
 
 app.use('/', router);
 
