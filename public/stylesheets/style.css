@@ -100,7 +100,8 @@ label {
   display: grid;
 }
 
-input {
+input,
+textarea {
   padding: 0 0.1rem;
   font-family: inherit;
   font-size: inherit;

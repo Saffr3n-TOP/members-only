@@ -8,7 +8,7 @@ import Message from './models/message';
 
 export async function index(req: Request, res: Response, next: NextFunction) {
   const messages = await Message.find()
-    .sort({ date: 1 })
+    .sort({ date: -1 })
     .populate('author', {}, User)
     .exec()
     .catch(() => {});
@@ -120,12 +120,46 @@ export function logout(req: Request, res: Response, next: NextFunction) {
 }
 
 export function createGet(req: Request, res: Response, next: NextFunction) {
-  res.send('NOT IMPLEMENTED: Message create GET route');
+  if (!req.user) res.redirect('/login');
+  res.status(200).render('create', { title: 'New Message' });
 }
 
-export function createPost(req: Request, res: Response, next: NextFunction) {
-  res.send('NOT IMPLEMENTED: Message create POST route');
-}
+export const createPost = [
+  body('title', 'Title is required').trim().notEmpty().bail(),
+  body('text', 'Message is required').trim().notEmpty(),
+
+  async function (req: Request, res: Response, next: NextFunction) {
+    if (!req.user) {
+      const err = createError(401, 'Unauthorized');
+      return next(err);
+    }
+
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      return res.status(400).render('create', {
+        title: 'New Message',
+        formData: req.body,
+        error: errors.array()[0]
+      });
+    }
+
+    const message = new Message({
+      title: req.body.title,
+      text: req.body.text,
+      author: req.user
+    });
+
+    const isSaved = !!(await message.save().catch(() => {}));
+
+    if (!isSaved) {
+      const err = createError(500, 'No Database Response');
+      return next(err);
+    }
+
+    res.redirect('/');
+  }
+];
 
 export function deleteGet(req: Request, res: Response, next: NextFunction) {
   res.send('NOT IMPLEMENTED: Message delete GET route');

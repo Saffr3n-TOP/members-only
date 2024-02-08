@@ -1,0 +1,17 @@
+extends layout
+
+block content
+  h1= title
+
+  form(method='POST')
+    label(for='title') Title
+      input#title(type="text" name='title' required aria-describedby='hint' value=(formData ? formData.title : ''))
+      if error && error.path === 'title'
+        small#hint= error.msg
+    label(for='text') Message
+      textarea#text(name="text" required aria-describedby='hint')= (formData ? formData.text : '')
+      if error && error.path === 'text'
+        small#hint= error.msg
+    button(type='submit') Post
+
+  script(type='text/javascript' src='/javascripts/form.js')
