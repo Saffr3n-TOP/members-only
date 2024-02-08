@@ -1,7 +1,8 @@
 import { Request, Response, NextFunction } from 'express';
 import { body, validationResult } from 'express-validator';
+import passport from 'passport';
 import bcrypt from 'bcryptjs';
-import createError from 'http-errors';
+import createError, { HttpError } from 'http-errors';
 import User from './models/user';
 import Message from './models/message';
 
@@ -29,8 +30,35 @@ export function loginGet(req: Request, res: Response, next: NextFunction) {
   res.status(200).render('login', { title: 'Log In' });
 }
 
-export function loginPost(req: Request, res: Response, next: NextFunction) {
-  res.send('NOT IMPLEMENTED: Login POST route');
+export async function loginPost(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  passport.authenticate(
+    'local',
+    function (err: HttpError, user: Express.User, info: { message: string }) {
+      if (err) {
+        return next(err);
+      }
+
+      if (!user) {
+        return res.status(400).render('login', {
+          title: 'Log In',
+          formData: req.body,
+          error: { msg: info.message }
+        });
+      }
+
+      req.login(user, function (err) {
+        if (err) {
+          return next(err);
+        }
+
+        res.redirect('/');
+      });
+    }
+  )(req, res, next);
 }
 
 export function registerGet(req: Request, res: Response, next: NextFunction) {
